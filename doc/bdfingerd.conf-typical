@@ -1,0 +1,138 @@
+# bdfingerd.conf   (make sure this is the name)
+#
+# This file contains configuration information for the
+# Big Dumb Finger Daemon. The format is
+# simple. Comments are prepended with # symbols as
+# usual. Meaningful lines must contain a variable name,
+# and optionally may also contain a value to which the
+# variable should be set after an '=' symbol. If a
+# variable is not followed by an '=' symbol and a value,
+# it is 'toggled on', the same as setting the variable
+# equal to '1'.
+#
+# Example 1:  set the variable 'PORT' to the value '79'
+#        PORT=79
+# Example 2:  switch on the variable 'HISTORY'
+#        HISTORY
+# also   HISTORY=1
+# Example 3:  switch off the variable 'HISTORY'
+#        HISTORY=0
+#
+# Variable names are case insensitive, so
+# 'PORT' equals 'Port' equals 'port' etc.
+#
+# When bdfingerd is run, any command line options
+# which deal with the same issue as something in the
+# configuration file will always have precedence
+# over the value in the configuration file.
+#
+# 25 July 2002
+
+# locations of some special files and directories
+REPOSITORY=/var/spool/finger
+PIDFILE=/tmp/bdfingerd.pid
+
+# which port to run the server on (almost always 79)
+PORT=79
+
+# Enable TTY if you mean for the server NOT to run in the
+# background by default, but to stay running in a terminal
+# (you would see more notices/error messages this way),
+# but few people will really want to do this. You can also
+# just use the -t command line option.
+# TTY
+
+# Enable WELCOME  if you want a "Welcome to host so-and-so" message
+# WELCOME
+
+# Enable UPTIME if you mean for the server to report the
+# system uptime along with the banner (requires WELCOME also to be on)
+# UPTIME
+
+# SAFEUSER is the user and to become when dropping root privileges.
+# If 'nobody' doesn't work, try 'daemon' or 'bin'.
+SAFEUSER=nobody
+
+# MAXCHILDREN is maximum number of concurrent connections allowed
+# This is set to 30 by default. It's mainly for protecting against
+# DoS attacks, since in what reasonable situation should a finger
+# daemon possibly be sending data to more than 30 clients at a time?
+MAXCHILDREN=30
+
+# TIMEOUT is how long (in seconds) to hold an open connection
+# waiting for input. Finger is not a protocol in which we should
+# really wait for the client to type anything, so 30 seconds is more
+# than reasonable
+TIMEOUT=30
+
+# To disable logging connections to the finger daemon with
+# the syslogd interface, set LOGGING to 0.
+LOGGING
+
+# To allow empty queries, which result in a list of all
+# users currently logged in, set ALLOWEMPTY to 1.  Doing so
+# could be a potential security risk.
+# ALLOWEMPTY
+
+# Determine the default style of report for empty finger requests
+# (those that list all users logged in). 'SHORT' is the usual
+# short list style, 'LONG' produces the paragraph output as seen
+# in finger requests for specific users, except this time for
+# everyone who is logged in.
+# finger -l @host will still get long output even if this
+# is set to 'SHORT'
+MULTISTYLE=SHORT
+
+# To allow the fingering of 'root', set SHOWROOT to 1.  Otherwise
+# the finger daemon will act in all cases as if 'root' does not
+# exist.  Hiding information about root is a plus for security.
+# SHOWROOT
+
+# Set the following variable to ignore the 'nofinger' file of any
+# user.  'nofinger' files for a user tell the finger daemon to act
+# as if that user does not exist, just like the SHOWROOT variable
+# above hides the existence of 'root'.  This has no effect on the
+# above SHOWROOT variable.
+# IGNORENOFINGER
+
+# Set FILESIZELIMIT to the maximum size in bytes of what will be
+# displayed of a given user's plan, project, pgp-key, or forward
+# files. 32768 (32K) is the default.
+FILESIZELIMIT=32768
+
+# To have dates displayed in the correct way (i.e. '17 May 2002'
+# instead of 'May 17 2002'), enable the following option.
+# The default behaviour is to use the American-preferred
+# 'May 17 2002' style.
+# EURODATES
+
+# Comment out the line below if you want to require finger clients to
+# specify the exact login name of a user in question, instead of allowing
+# query by real name (as in the GECOS field of /etc/passwd)
+MATCHREALNAMES
+
+# Uncomment this variable to allow forwarding of finger
+# requests.  This may not be the best idea for the sake of security.
+# Be especially wary should you be running this on a machine that
+# acts as a firewall, gateway, or router for a LAN.
+# FORWARDING
+
+# Set any of the following to zero to disable the display of these
+# atoms of information, when they're available.
+SHOWHOME
+SHOWSHELL
+SHOWMISC	# office, office phone, and home phone from gecos
+SHOWLOGINS
+SHOWLASTLOGIN
+SHOWADDR	# 'from' address for logins and last logins
+SHOWIDLE
+
+# Note that SHOWMAIL only works for the traditional UNIX spool-style
+# mailboxes (/var/spool/mail), so if you're running qmail or something,
+# you should really turn this off.
+SHOWMAIL	# time of mail last read, and received
+
+SHOWFORWARD     # .forward
+SHOWPROJECT	# .project
+SHOWPLAN	# .plan
+SHOWPGPKEY	# .pgpkey

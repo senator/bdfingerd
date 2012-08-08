@@ -1,0 +1,153 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(inc/detect.h)
+
+AC_CANONICAL_HOST
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_CONFIG_HEADER(config.h)
+
+
+dnl These next two tests are unprofessional looking and probably
+dnl unneccesary, but whatever. They work for now.
+
+if test x$prefix = xNONE; then
+	prefix=$ac_default_prefix
+fi
+
+if test x$sysconfdir = x\${prefix}/etc; then
+	sysconfdir=${prefix}/etc
+fi
+
+if ! test x$bindir = x\${exec_prefix}/bin; then
+	echo	"  !!! Sorry, just use --prefix and/or --sysconfdir, but no --bindir !!!"
+	exit 1
+fi
+
+if ! test x$sbindir = x\${exec_prefix}/sbin; then
+        echo    "  !!! Sorry, just use --prefix and/or --sysconfdir, but no --sbindir !!!"
+        exit 1
+fi
+
+# def_facility="LOG_MAIL"
+
+# "Safe" default - assumption is that most users will use gcc
+LDrpath="-Wl,-rpath,"
+
+case $host in
+	*-linux*)
+		AC_DEFINE(LINUX)
+#		def_priority="LOG_NOTICE"
+#		def_group="mail"
+#		def_user="mail"
+		LDFLAGS="$LDFLAGS -Wl,--strip-all"
+		;;
+	*-freebsd*)
+		AC_DEFINE(BSD)
+#		def_priority="LOG_NOTICE"
+#		def_group="nobody"
+#		def_user="nobody"
+		LDFLAGS="$LDFLAGS -Wl,--strip-all"
+		;;
+	*-solaris*)
+		AC_DEFINE(SOLARIS)
+#		def_priority="LOG_ERR"
+#		def_group="nobody"
+#		def_user="nobody"
+		if test "$GCC" = "yes"; then
+			# flag for gcc to pass to solaris ld
+			LDrpath="-Wl,-R"
+		else
+			LDrpath="-R"
+			# flag for sunpro to accept C++ comments
+			CFLAGS="$CFLAGS -xCC"
+		fi
+		;;
+	*-hpux10.20*)
+		AC_DEFINE(HPUX1020)
+#		def_priority="LOG_INFO"
+#		def_group="daemon"
+#		def_user="daemon"
+		;;
+	*-aix*)
+		AC_DEFINE(AIX)
+#		def_priority="LOG_ERR"
+#		def_group="daemon"
+#		def_user="daemon"
+		CFLAGS="$CFLAGS -DINITGUID"
+		LDrpath="-Wl,-berok,-blibpath:/usr/lib:"
+		;;
+	*-dec-osf4*)
+		AC_DEFINE(OSF4)
+#		def_priority="LOG_ERR"
+#		def_group="mail"
+#		def_user="mail"
+		CFLAGS="$CFLAGS"
+		LDFLAGS="$LDFLAGS -ldb -s"
+		;;
+	*-dec-osf5*)
+		AC_DEFINE(OSF5)
+#		def_priority="LOG_ERR"
+#		def_group="mail"
+#		def_user="mail"
+		CFLAGS="$CFLAGS"
+		LDFLAGS="$LDFLAGS -ldb -s"
+		;;
+esac
+
+if test "$GCC" = "yes"; then
+	CFLAGS=${CFLAGS-"-O2"}
+#	CFLAGS="$CFLAGS -Wall"
+else
+	CFLAGS=${CFLAGS-"-O"}
+fi
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(sys/time.h syslog.h unistd.h sys/sched.h sched.h)
+
+AC_MSG_CHECKING([whether stdio.h declares vsnprintf])
+AC_EGREP_HEADER(vsnprintf, stdio.h,
+  [AC_DEFINE(STDIO_H_DECLARES_VSNPRINTF, 1,
+             [ If <stdio.h> declares vsnprintf.  ])
+   AC_MSG_RESULT(yes)],
+   AC_MSG_RESULT(no))
+
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_UID_T
+AC_TYPE_PID_T
+AC_STRUCT_TM
+
+dnl Checks for library functions.
+AC_FUNC_MEMCMP
+AC_TYPE_SIGNAL
+AC_CHECK_FUNCS(bind,,LIBS="$LIBS -lsocket")
+
+dnl Choose syslog facility.
+# AC_MSG_CHECKING(which syslog facility to use)
+# AC_ARG_WITH(logfacility,
+#	[  --with-logfacility=FACILITY   facility for syslog messages [LOG_MAIL]],
+#	facility=$withval,
+#	facility=$def_facility)
+#AC_MSG_RESULT($facility)
+#AC_DEFINE_UNQUOTED(SYSLOG_FACILITY, $facility)
+
+dnl Choose syslog priority.
+#AC_MSG_CHECKING(which syslog priority to use)
+#AC_ARG_WITH(logpriority,
+#	[  --with-logpriority=PRIORITY   priority for syslog messages [varies per OS]],
+#	priority=$withval,
+#	priority=$def_priority)
+#AC_MSG_RESULT($priority)
+#AC_DEFINE_UNQUOTED(SYSLOG_LEVEL, $priority)
+
+AC_SUBST(CFLAGS)dnl
+
+AC_OUTPUT(Makefile)

@@ -1,0 +1,66 @@
+The Big Dumb Finger Daemon
+==========================
+
+Author: Lebbeous Fogle-Weekley (aka Lebbeous Weekley)
+
+I don't think there can be many finger daemons on github, so I decided to haul
+out this old thing.  Except for updating my email address just now, I haven't
+touched this code in just over ten years.
+
+Sometime I might review the TODOs, reformat the code in the style I would use
+today, and go bughunting.  Maybe.  As I recall this actually worked pretty
+well on Linux.  I'm not sure how much I actually knew about security in 2002.
+I would take my assertions about the security of bdfingerd from that time with
+a big grain of salt.
+
+8 August 2012
+
+Original README
+---------------
+
+The Big Dumb Finger Daemon is meant to be a more secure and much more
+configurable version for Linux of the common finger daemons, mostly 
+derived from the original BSD code which comes preinstalled on many
+UNIX machines today.
+
+Unlike some other finger daemons out there which add many frivolous 
+options, to the point of allowing users to provide outright false 
+information to finger clients, bdfingerd's configurability is solely for 
+the administator (though the .nofinger and such files work in the same way 
+as with standard finger daemons).
+
+As a standalone daemon (the way it was designed to be used), bdfingerd,
+after being started as root (mostly so it can bind port 79), drops root
+privileges and becomes the user 'nobody', improving security, before
+accepting any client connections.  As of bdfingerd 0.9.5, inetd *is*
+supported, if you want to use it that way.  Just invoke bdfingerd -i
+
+*** For individual users on the system who value their privacy, one 
+important advantage of bdfingerd over standard finger daemons is that
+if the administrator sets up a finger spool repository (say
+/var/spool/finger) with read/write/sticky-bit permissions for the
+system's users (like /var/spool/mail and /tmp), the users can place
+their project, plan, forward, pgpkey, and even nofinger files in that
+repository instead of in their home directories, so that the information
+contained in such files can be made public without giving away so much
+as execute permission on one's own home directory.  Even nofinger will
+work from this location as expected to hide a user, and to a user who
+wants not to appear in finger requests, the privacy of being able
+to have absolutely no world or even group permissions set on his
+home directory are a plus.
+
+An administrator may completely and happily neglect to create such a 
+repository, however, and the finger daemon will still find nofinger, plan, 
+and all those files in the users' home directories as always and will act
+in the normal way.  Additionally, an administrator who doesn't want
+her users to be able to use nofinger (or even plan, project, so on)
+files can easily and specifically disable the use of each file in the
+bdfingerd.conf file.
+
+For a further understanding of bdfingerd's configurability, read the 
+bdfingerd.conf file.  It's full of comments, and very easy to use. I 
+think and hope you will find this to be a fairly professional and very
+useful implementation of fingerd, and a worthy server for your machine(s).
+
+Lebbeous Weekley
+  30 July 2002

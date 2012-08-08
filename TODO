@@ -1,0 +1,31 @@
+This is version 0.9.5
+
+   - to do,   * done,   = partial,    ? maybe done
+
+* make 'Charlie &' work  (done 31 May 2002)
+* make read for .project and .forward only one line
+* short and long format controlled by /W and a cvar called
+    MULTISTYLE, which can be set to either 'short' or 'long',
+    and applies to the format of output for empty queries
+    (who's-on-the-box queries).
+* forwarding ('buddy@linux.com@otherhost.net'), of course disabled by
+    default, controllable with cvar FORWARDING
+* improve cvar system to set cvar->value appropriately when the string 
+    read is 'yes', 'true', 'on', 'enabled', 'no', 'false', 'off', or 
+    'disabled'.
+? fix cvar reload behaviour (after SIGHUP)
+* add cvar MATCHREALNAMES to toggle matching of client tokens to users'
+    real names as well as login names (enable by default).
+= add an inetd mode. this will work best after some things are cleaned up,
+    especially in child.c
+* add a command line option to specify pid file location
+* add cvar FILESIZELIMIT to set a cap on the size of .plan and 
+    other user files.
+- work with the results of the configure script to actually do something
+    based on whether certain functions are found, like bind
+* go through code to find and address all FIXME's that can/should be
+    reasonably handled before 0.9.5 release
+- add functionality to allow 'ghost users', who have plan files in 
+    /var/spool/finger, but do not exist in the system (not in /etc/passwd)
+    Enable or disable functionality with cvar GHOSTUSERS.
+- port to Solaris first, then tackle BSD.  Maybe for version 1.5 or 2.0.

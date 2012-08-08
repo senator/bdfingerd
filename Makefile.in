@@ -1,0 +1,58 @@
+CC = @CC@
+CFLAGS = @CFLAGS@ -I. -Iinc
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+PREFIX = @prefix@
+SYSCONFDIR = @sysconfdir@
+INSTALL = @INSTALL@
+PROG = ./bdfingerd
+OBJ=	obj/main.o \
+	obj/sock.o\
+	obj/signals.o \
+	obj/child.o\
+	obj/userinfo.o\
+	obj/utmp.o\
+	obj/paragraph.o\
+	obj/lastlog.o\
+	obj/format.o \
+	obj/conf.o \
+	obj/mail.o\
+	obj/bdfddate.o
+
+ 
+all: config.h ${PROG}
+
+${PROG}: date	${OBJ}
+	${CC} ${LDFLAGS} ${LIBS} ${OBJ} -o ${PROG}
+
+obj/%.o:	%.c
+	${CC} ${CFLAGS} -c $< -o $@
+
+date:
+	sh bdfddate.sh
+
+clean:
+	rm -f obj/*.o *.c~ core bdfingerd >/dev/null
+
+distclean:
+	rm -f obj/*.o *.c~ core bdfingerd config.cache config.h Makefile config.status config.log >/dev/null
+
+install:
+	mkdir -p ${PREFIX}/doc/`${PROG} -v` > /dev/null 2>&1
+	chmod 755 ${PREFIX}/doc/`${PROG} -v` > /dev/null 2>&1
+	if test x"${INSTALL}" = x"NONE"; then \
+	  cp -f bdfingerd ${PREFIX}/sbin ; \
+	  cp -f bdfingerd.conf ${SYSCONFDIR} ; \
+	  cp -f doc/* ${PREFIX}/doc/`${PROG} -v` && echo "Documentation installed." \
+	  chmod 755 ${PREFIX}/sbin/bdfingerd && echo "Binary installed."; \
+	  chmod 644 ${SYSCONFDIR}/bdfingerd.conf && echo "Conf file installed."; \
+	else \
+	  ${INSTALL} -m 755 bdfingerd ${PREFIX}/sbin && echo "Binary installed."; \
+	  ${INSTALL} -m 644 bdfingerd.conf ${SYSCONFDIR} && echo "Conf file installed."; \
+	  ${INSTALL} -m 644 doc/* ${PREFIX}/doc/`${PROG} -v` && echo "Documentation installed."; \
+	fi
+
+indent:
+	@if which indent > /dev/null 2>&1; then \
+	  indent -bli0 -i4 -nut *.c && echo "done." ; \
+	fi

@@ -1,0 +1,82 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef gid_t
+
+/* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
+#undef HAVE_SYS_WAIT_H
+
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef pid_t
+
+/* Define as the return type of signal handlers (int or void).  */
+#undef RETSIGTYPE
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define if your <sys/time.h> declares struct tm.  */
+#undef TM_IN_SYS_TIME
+
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef uid_t
+
+/* Define if you have the bind function.  */
+#undef HAVE_BIND
+
+/* Define if you have the <dirent.h> header file.  */
+#undef HAVE_DIRENT_H
+
+/* Define if you have the <ndir.h> header file.  */
+#undef HAVE_NDIR_H
+
+/* Define if you have the <sys/dir.h> header file.  */
+#undef HAVE_SYS_DIR_H
+
+/* Define if you have the <sys/ndir.h> header file.  */
+#undef HAVE_SYS_NDIR_H
+
+/* Define if you have the <sys/time.h> header file.  */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you have the <syslog.h> header file.  */
+#undef HAVE_SYSLOG_H
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H
+
+/* sys/sched.h */
+#undef HAVE_SYS_SCHED_H
+
+/* sched.h */
+#undef HAVE_SCHED_H
+
+/* (v)snprintf exists? */
+#undef STDIO_H_DECLARES_VSNPRINTF
+
+/* initgroups exists? */
+#undef GRP_H_DECLARES_INITGROUPS
+#undef UNISTD_H_DECLARES_INITGROUPS
+
+#undef LINUX
+#undef SOLARIS
+#undef HPUX1020
+#undef AIX
+#undef OSF4
+#undef OSF5
+
+
+
+/* Name for syslog messages (for openlog) */
+#undef SYSLOG_NAME
+
+/* Facility for syslog messages */
+#undef SYSLOG_FACILITY
+
+/* Priority for syslog messages */
+#undef SYSLOG_LEVEL
+
+

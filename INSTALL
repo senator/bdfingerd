@@ -1,0 +1,97 @@
+  The Big Dumb Finger Daemon, by Lebbeous Weekley
+
+*** As of right now, this code only works on Linux. ***
+*** Help porting it to BSD would be sweet.          ***
+***   lebbeous@gmail.com                            ***
+
+Contents:
+   1) TO INSTALL
+   2) TO CONFIGURE
+   3) NEW SECURITY SCHEMES
+   4) INETD
+
+
+TO INSTALL:
+
+As usual, on a GNU-compliant system, run
+
+  ./configure
+  make
+  make install
+
+with the last step done as root, of course.
+
+This will install the binary to /usr/local/sbin by default, and the
+configuration file to /usr/local/etc.  To change these values,
+use
+
+  ./configure --prefix=/usr
+
+or something along those lines.  The --sysconfdir option can also
+be used.
+
+
+TO CONFIGURE:
+
+  Edit /usr/local/etc/bdfingerd.conf  (or wherever you installed it) to 
+your liking.  The file is well commented and explains the purpose of
+every variable.  Then just run bdfingerd and you're all set.  If you 
+should happen to have put bdfingerd.conf somewhere other than  /etc, 
+/usr/etc/, /usr/local/etc, or the directory that you're actually in
+when you run the 'bdfingerd' command, you will have to specify its name 
+with the full path after the -c option to bdfingerd, such as
+
+   bdfingerd -c /opt/etc/bdfingerd.conf
+
+
+NEW SECURITY SCHEMES:
+
+  The most unique feature of bdfingerd is its use of a public directory
+where users can put their plan, project, pgpkey, forward, and nofinger
+files, such that they can be read by a daemon that runs as the user
+'nobody', yet users need give away no world or group permissions at
+all on their home directories.
+
+  To implement this new feature, the administrator should create
+/var/spool/finger with permissions  drwxrwxrwt  (mode 1777), which
+mean that any user can write to this directory, but none can delete the
+files of another.
+
+  In this directory, each user can create a directory in his name, and
+therein place his plan, project, and those files, so that they can be
+read by the world while his home directory need not be.
+
+  You could also set a group owner for the /var/spool/finger if you
+wished to be more discriminating about who can write there, and then
+change permissions such that it would look something like:
+
+drwxrwxr-t    5 root     users        4096 Mar  8 18:37 /var/spool/finger/
+
+which would be fine.
+
+Of course, if this task should not be carried out by the administrator,
+the old $HOME/.plan kind of system, assuming the user in question gives
+the neccessary permission on his home directory, will still work.
+
+
+INETD:
+
+  The Big Dumb Finger Daemon was designed for use as a standalone server,
+however it does have an inetd mode.  Put a line like this in your
+/etc/inetd.conf :
+
+finger	stream	tcp	nowait	nobody	/usr/sbin/tcpd	/usr/local/sbin/bdfingerd -i
+
+and give inetd the ol' kill -s SIGHUP
+
+The preferred use, however, would be to just start bdfingerd in your startup
+rc scripts, with no options needed for a typical setup.
+
+
+THANK YOU!
+
+  See the output of the 'bdfingerd -h' command for help on the 
+command-line options.
+
+   Lebbeous Weekley
+     30 July 2002
